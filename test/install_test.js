@@ -493,6 +493,61 @@ describe('gulp-install', function () {
 
     stream.end();
   });
+
+  it('should run `/usr/local/npm install` if stream contains `package.json` and `npmDir` option is set', function (done) {
+    var file = fixture('package.json');
+
+    var stream = install({npmDir : '/usr/local'});
+
+    stream.on('error', function(err) {
+      should.exist(err);
+      done(err);
+    });
+
+    stream.on('data', function () {
+    });
+
+    stream.on('end', function () {
+      commandRunner.run.called.should.equal(1);
+      commandRunner.run.commands[0].cmd.should.equal('/usr/local/npm');
+      commandRunner.run.commands[0].args.should.eql(['install']);
+      done();
+    });
+
+    stream.write(file);
+
+    stream.end();
+  });
+
+
+  it('should run `/usr/local/bower install --config.interactive=false` if stream contains `bower.json` and `bowerDir` option is set', function (done) {
+    var file = fixture('bower.json');
+
+    var stream = install({
+      bowerDir : '/usr/local'
+    });
+
+    stream.on('error', function(err) {
+      should.exist(err);
+      done(err);
+    });
+
+    stream.on('data', function () {
+    });
+
+    stream.on('end', function () {
+      commandRunner.run.called.should.equal(1);
+      commandRunner.run.commands[0].cmd.should.equal('/usr/local/bower');
+      commandRunner.run.commands[0].args.should.eql(['install', '--config.interactive=false']);
+      done();
+    });
+
+    stream.write(file);
+
+    stream.end();
+
+  });
+
 });
 
 function mockRunner () {

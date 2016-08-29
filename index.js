@@ -54,6 +54,13 @@ module.exports = exports = function install(opts) {
           cmd.args.push('--no-optional');
         }
 
+        if (cmd.cmd === 'bower' && opts && opts.bowerDir) {
+          cmd.cmd = path.join(opts.bowerDir, cmd.cmd);
+        }
+        if (cmd.cmd === 'npm' && opts && opts.npmDir) {
+          cmd.cmd = path.join(opts.npmDir, cmd.cmd);
+        }
+
         cmd.cwd = path.dirname(file.path);
         toRun.push(cmd);
       }
